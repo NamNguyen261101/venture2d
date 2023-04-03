@@ -1,0 +1,3 @@
+Camera Follow: --- Not work
+
+Camera Bounce: Not done -- set limit for camera moving

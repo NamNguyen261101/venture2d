@@ -1,0 +1,11 @@
+
+
+- Character Render - ok
+- Character Animation - ok
+- Character Moving - ok
+- Character Animator - (Falling - to fast transfer to idle)
+
+
+- Using - rigid to move ( will try to Dotween to move)
+
+
