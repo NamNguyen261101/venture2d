@@ -20,29 +20,14 @@ public class PlayerMovement : MonoBehaviour
     private float groundCheckRadius = 0.2f;
     private bool isGrounded = false;
     private bool jump;
-
-    [SerializeField] private int jumpCount = 1;
-    [SerializeField] private int maxJump = 1;
+    [SerializeField] private int jumpCount = 0;
+    [SerializeField] private int jumpMax = 2;
 
     private void Update()
     {
         directionX = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetButtonDown("Jump"))
-        {
-            //rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            jump = true;
-            animator.SetBool("IsJumping", true);
-        }   else if (Input.GetButtonUp("Jump"))
-        {
-            jump = false;
-            animator.SetBool("IsJumping", false);
-            // animator.SetBool("IsFalling", false);
-        }
-
-        
-
-        // AnimationState();
+        Jump();
     }
 
     private void FixedUpdate()
@@ -53,7 +38,6 @@ public class PlayerMovement : MonoBehaviour
     private void Movement(float dirX, bool jumpUp)
     {
         #region Move & Run
-        // rb.velocity = new Vector2(directionX * moveSpeed, rb.velocity.y);
         float horizontalValue = dirX * moveSpeed * 100 * Time.deltaTime;
         Vector2 targetVelocity = new Vector2(horizontalValue, rb.velocity.y);
         rb.velocity = targetVelocity;
@@ -61,14 +45,12 @@ public class PlayerMovement : MonoBehaviour
         // flip state
         // getChild(0) -> render from not from parent object
         if (isFacingRight && dirX < 0)
-        {
-            //this.gameObject.transform.localScale = new Vector3(-1, 1, 1);
-            spriteRenderer.flipX = true; 
+        {   
+            spriteRenderer.flipX = true;
             isFacingRight = false;
         }
         else if (!isFacingRight && dirX > 0)
         {
-            // this.gameObject.transform.localScale = new Vector3(1, 1, 1);
             spriteRenderer.flipX = false;
             isFacingRight = true;
         }
@@ -85,6 +67,28 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
         #endregion
+    }
+    
+    private void Jump()
+    {
+        if (Input.GetButtonDown("Jump") && jumpCount < jumpMax)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            jump = true;
+            jumpCount++;
+            isGrounded = false;
+            animator.SetBool("IsJumping", true);
+        }
+        else if (Input.GetButtonUp("Jump"))
+        {
+            jump = false;
+            animator.SetBool("IsJumping", false);
+        }
+
+        if (isGrounded == true)
+        {
+            jumpCount = 0;
+        }
     }
 
     private void GroundChecked()
